@@ -1,0 +1,67 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+[System.Serializable]
+
+public class GOPoolItem
+{
+    public GameObject goToPool;
+    public int goQwty;
+    public GameObject father;
+    public bool addMore = true;
+}
+
+public class Pooler : MonoBehaviour
+{   public static Pooler Instance;
+
+    public List<GOPoolItem> itemsToPool;
+    public List<GameObject> pooledGO;
+
+    void Awake()
+    {
+        Instance = this;
+    }
+
+    private void Start()
+    {
+        pooledGO = new List<GameObject>();
+
+        foreach (GOPoolItem item in itemsToPool)
+        {
+            for (int i = 0; i < item.goQwty; i++)
+            {
+                GameObject go = Instantiate(item.goToPool);
+                go.transform.parent = item.father.transform;
+                go.SetActive(false);
+                pooledGO.Add(go);
+            }
+
+            GameCtrl.Instance.Create(item.goToPool.tag, item.goQwty);
+        } 
+    }
+
+    public GameObject GetPooledGO(string tag)
+    {
+        for (int i = 0; i < pooledGO.Count; i++)
+        {
+            if (!pooledGO[i].activeInHierarchy && pooledGO[i].tag == tag)
+            {
+                return pooledGO[i];
+            }
+        }
+        foreach (GOPoolItem item in itemsToPool)
+        {
+            if (item.goToPool.tag == tag)
+            {
+                if (item.addMore)
+                {
+                    GameObject go = Instantiate(item.goToPool);
+                    go.transform.parent = item.father.transform;
+                    go.SetActive(false);
+                    pooledGO.Add(go);
+                }
+            }
+        }
+        return null;
+    }
+}
