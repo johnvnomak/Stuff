@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-//using UnityEngine.Rendering.PostProcessing;
 
 public class GameMaster : MonoBehaviour
 {
